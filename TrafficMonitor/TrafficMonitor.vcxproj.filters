@@ -94,14 +94,26 @@
     <Filter Include="源文件和头文件\公共的类\WinVersionHelper">
       <UniqueIdentifier>{dd5aaacf-0f59-47ca-a738-250b15c6bbbb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件和头文件\对话框类\AcknowledgementDlg">
-      <UniqueIdentifier>{b5204c4a-c23b-4824-b31f-e41ca736b3ee}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件和头文件\对话框类\AboutDlg">
       <UniqueIdentifier>{1f240f1b-347d-4281-a4cf-18bfebfacb6b}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件和头文件\公共的类\SimpleXML">
       <UniqueIdentifier>{8c35a0e3-e526-4f2f-9bc2-ed74dd37b238}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件和头文件\对话框类\颜色设置对话框\MFCColorDialogEx">
+      <UniqueIdentifier>{dd737159-8653-44d0-bf51-f0e3afad4e5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件和头文件\派生的控件类\CTabCtrlEx">
+      <UniqueIdentifier>{e5835851-f8d8-47dd-9669-f70b6f424386}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件和头文件\公共的类\CrashTool">
+      <UniqueIdentifier>{12448ccc-0fa7-4f50-8261-dcb04f068e39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件和头文件\对话框类\MessageDlg">
+      <UniqueIdentifier>{645d28e7-da22-44f8-8e33-894109dde4b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件和头文件\公共的类\CVariant">
+      <UniqueIdentifier>{1ca17ad5-07ba-4361-bbeb-fdc5047697fc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -213,14 +225,29 @@
     <ClInclude Include="WinVersionHelper.h">
       <Filter>源文件和头文件\公共的类\WinVersionHelper</Filter>
     </ClInclude>
-    <ClInclude Include="AcknowledgementDlg.h">
-      <Filter>源文件和头文件\对话框类\AcknowledgementDlg</Filter>
-    </ClInclude>
     <ClInclude Include="AboutDlg.h">
       <Filter>源文件和头文件\对话框类\AboutDlg</Filter>
     </ClInclude>
     <ClInclude Include="SimpleXML.h">
       <Filter>源文件和头文件\公共的类\SimpleXML</Filter>
+    </ClInclude>
+    <ClInclude Include="CMFCColorDialogEx.h">
+      <Filter>源文件和头文件\对话框类\颜色设置对话框\MFCColorDialogEx</Filter>
+    </ClInclude>
+    <ClInclude Include="CTabCtrlEx.h">
+      <Filter>源文件和头文件\派生的控件类\CTabCtrlEx</Filter>
+    </ClInclude>
+    <ClInclude Include="crashtool.h">
+      <Filter>源文件和头文件\公共的类\CrashTool</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageDlg.h">
+      <Filter>源文件和头文件\对话框类\MessageDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="CVariant.h">
+      <Filter>源文件和头文件\公共的类\CVariant</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawCommonEx.h">
+      <Filter>源文件和头文件\公共的类\DrawCommon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -317,14 +344,29 @@
     <ClCompile Include="WinVersionHelper.cpp">
       <Filter>源文件和头文件\公共的类\WinVersionHelper</Filter>
     </ClCompile>
-    <ClCompile Include="AcknowledgementDlg.cpp">
-      <Filter>源文件和头文件\对话框类\AcknowledgementDlg</Filter>
-    </ClCompile>
     <ClCompile Include="AboutDlg.cpp">
       <Filter>源文件和头文件\对话框类\AboutDlg</Filter>
     </ClCompile>
     <ClCompile Include="SimpleXML.cpp">
       <Filter>源文件和头文件\公共的类\SimpleXML</Filter>
+    </ClCompile>
+    <ClCompile Include="CMFCColorDialogEx.cpp">
+      <Filter>源文件和头文件\对话框类\颜色设置对话框\MFCColorDialogEx</Filter>
+    </ClCompile>
+    <ClCompile Include="CTabCtrlEx.cpp">
+      <Filter>源文件和头文件\派生的控件类\CTabCtrlEx</Filter>
+    </ClCompile>
+    <ClCompile Include="crashtool.cpp">
+      <Filter>源文件和头文件\公共的类\CrashTool</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageDlg.cpp">
+      <Filter>源文件和头文件\对话框类\MessageDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="CVariant.cpp">
+      <Filter>源文件和头文件\公共的类\CVariant</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawCommonEx.cpp">
+      <Filter>源文件和头文件\公共的类\DrawCommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

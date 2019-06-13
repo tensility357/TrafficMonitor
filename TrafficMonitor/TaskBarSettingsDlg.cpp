@@ -5,6 +5,7 @@
 #include "TrafficMonitor.h"
 #include "TaskBarSettingsDlg.h"
 #include "afxdialogex.h"
+#include "CMFCColorDialogEx.h"
 
 
 // CTaskBarSettingsDlg 对话框
@@ -37,6 +38,7 @@ void CTaskBarSettingsDlg::DrawStaticColor()
 		m_text_color_static.SetFillColor(m_data.text_colors[0]);
 	}
 	m_back_color_static.SetFillColor(m_data.back_color);
+	m_trans_color_static.SetFillColor(m_data.transparent_color);
 }
 
 void CTaskBarSettingsDlg::IniUnitCombo()
@@ -66,6 +68,7 @@ void CTaskBarSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_FONT_SIZE_EDIT1, m_font_size_edit);
 	DDX_Control(pDX, IDC_DOUBLE_CLICK_COMBO, m_double_click_combo);
 	DDX_Control(pDX, IDC_DIGIT_NUMBER_COMBO, m_digit_number_combo);
+	DDX_Control(pDX, IDC_TRANSPARENT_COLOR_STATIC, m_trans_color_static);
 }
 
 
@@ -124,7 +127,15 @@ BOOL CTaskBarSettingsDlg::OnInitDialog()
 
 	m_text_color_static.SetLinkCursor();
 	m_back_color_static.SetLinkCursor();
+	m_trans_color_static.SetLinkCursor();
 	DrawStaticColor();
+
+#ifdef COMPILE_FOR_WINXP
+	m_trans_color_static.EnableWindow(FALSE);
+#endif // COMPILE_FOR_WINXP
+
+	if(theApp.m_win_version.IsWindows7())
+		m_trans_color_static.EnableWindow(FALSE);
 
 	m_toolTip.Create(this);
 	m_toolTip.SetMaxTipWidth(theApp.DPI(300));
@@ -382,7 +393,7 @@ afx_msg LRESULT CTaskBarSettingsDlg::OnStaticClicked(WPARAM wParam, LPARAM lPara
 		}
 		else
 		{
-			CColorDialog colorDlg(m_data.text_colors[0], 0, this);
+			CMFCColorDialogEx colorDlg(m_data.text_colors[0], 0, this);
 			if (colorDlg.DoModal() == IDOK)
 			{
 				m_data.text_colors[0] = colorDlg.GetColor();
@@ -396,7 +407,7 @@ afx_msg LRESULT CTaskBarSettingsDlg::OnStaticClicked(WPARAM wParam, LPARAM lPara
 	case IDC_TEXT_COLOR_STATIC2:		//点击“背景颜色”时
 	{
 		//设置背景颜色
-		CColorDialog colorDlg(m_data.back_color, 0, this);
+		CMFCColorDialogEx colorDlg(m_data.back_color, 0, this);
 		if (colorDlg.DoModal() == IDOK)
 		{
 			m_data.back_color = colorDlg.GetColor();
@@ -404,6 +415,17 @@ afx_msg LRESULT CTaskBarSettingsDlg::OnStaticClicked(WPARAM wParam, LPARAM lPara
 				MessageBox(CCommon::LoadText(IDS_SAME_BACK_TEXT_COLOR_WARNING), NULL, MB_ICONWARNING);
 			DrawStaticColor();
 		}
+		break;
+	}
+	case IDC_TRANSPARENT_COLOR_STATIC:		//点击“透明色”时
+	{
+		CMFCColorDialogEx colorDlg(m_data.transparent_color, 0, this);
+		if (colorDlg.DoModal() == IDOK)
+		{
+			m_data.transparent_color = colorDlg.GetColor();
+			DrawStaticColor();
+		}
+		break;
 	}
 	default:
 		break;

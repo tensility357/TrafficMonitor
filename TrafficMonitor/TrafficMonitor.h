@@ -56,6 +56,7 @@ public:
 	MainConfigData m_cfg_data;
 	int m_notify_interval;		//弹出通知消息的时间间隔
 	bool m_debug_log;
+	bool m_taksbar_transparent_color_enable;
 
 	//bool m_is_windows10_fall_creator;
 	CWinVersionHelper m_win_version;		//当前Windows的版本
@@ -81,6 +82,9 @@ public:
 
 	void SetAutoRun(bool auto_run);
 	bool GetAutoRun();
+
+	//获取系统信息文本
+	CString GetSystemInfoString();
 
 private:
 	//int m_no_multistart_warning_time{};		//用于设置在开机后多长时间内不弹出“已经有一个程序正在运行”的警告提示

@@ -519,6 +519,28 @@ void CTrafficMonitorDlg::ShowNotifyTip(const wchar_t * title, const wchar_t * me
 	m_ntIcon.uFlags &= ~NIF_INFO;
 }
 
+void CTrafficMonitorDlg::UpdateNotifyIconTip()
+{
+	CString strTip;			//鼠标指向图标时显示的提示
+#ifdef _DEBUG
+	strTip = CCommon::LoadText(IDS_TRAFFICMONITOR, _T(" (Debug)"));
+#else
+	strTip = CCommon::LoadText(IDS_TRAFFICMONITOR);
+#endif
+
+	CString in_speed = CCommon::DataSizeToString(theApp.m_in_speed);
+	CString out_speed = CCommon::DataSizeToString(theApp.m_out_speed);
+
+	strTip += CCommon::StringFormat(_T("\r\n<%1%>: <%2%>/s"), { CCommon::LoadText(IDS_UPLOAD), out_speed });
+	strTip += CCommon::StringFormat(_T("\r\n<%1%>: <%2%>/s"), { CCommon::LoadText(IDS_DOWNLOAD), in_speed });
+	strTip += CCommon::StringFormat(_T("\r\nCPU: <%1%>%"), { theApp.m_cpu_usage });
+	strTip += CCommon::StringFormat(_T("\r\n<%1%>: <%2%>%"), { CCommon::LoadText(IDS_MEMORY), theApp.m_memory_usage });
+
+	CCommon::WStringCopy(m_ntIcon.szTip, 128, strTip);
+	::Shell_NotifyIcon(NIM_MODIFY, &m_ntIcon);
+
+}
+
 void CTrafficMonitorDlg::SaveHistoryTraffic()
 {
 	ofstream file{ theApp.m_history_traffic_path };
@@ -831,7 +853,7 @@ BOOL CTrafficMonitorDlg::OnInitDialog()
 #else
 	atip = CCommon::LoadText(IDS_TRAFFICMONITOR);
 #endif
-	//wcscpy_s(m_ntIcon.szTip, 128, atip);
+	//wcscpy_s(m_ntIcon.szTip, 128, strTip);
 	CCommon::WStringCopy(m_ntIcon.szTip, 128, atip.GetString());
 	m_ntIcon.uCallbackMessage = MY_WM_NOTIFYICON;	//应用程序定义的消息ID号
 	m_ntIcon.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;	//图标的属性：设置成员uCallbackMessage、hIcon、szTip有效
@@ -1010,7 +1032,7 @@ void CTrafficMonitorDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 
 		//如果发送和接收的字节数为0或上次发送和接收的字节数为0或当前连接已改变时，网速无效
-		if ((m_in_bytes == 0 && m_out_bytes == 0) || (m_last_in_bytes == 0 && m_last_out_bytes) || m_connection_change_flag)
+		if ((m_in_bytes == 0 && m_out_bytes == 0) || (m_last_in_bytes == 0 && m_last_out_bytes == 0) || m_connection_change_flag)
 		{
 			theApp.m_in_speed = 0;
 			theApp.m_out_speed = 0;
@@ -1211,7 +1233,7 @@ void CTrafficMonitorDlg::OnTimer(UINT_PTR nIDEvent)
 			if (last_memory_usage < theApp.m_general_data.memory_tip_value && theApp.m_memory_usage >= theApp.m_general_data.memory_tip_value && (m_timer_cnt - notify_time > static_cast<unsigned int>(theApp.m_notify_interval)))
 			{
 				CString info;
-				info.Format(CCommon::LoadText(IDS_MEMORY_UDAGE_EXCEED, _T(" %d%%!")), theApp.m_general_data.memory_tip_value);
+				info.Format(CCommon::LoadText(IDS_MEMORY_UDAGE_EXCEED, _T(" %d%%!")), theApp.m_memory_usage);
 				ShowNotifyTip(CCommon::LoadText(_T("TrafficMonitor "), IDS_NOTIFY), info.GetString());
 				notify_time = m_timer_cnt;
 			}
@@ -1227,14 +1249,17 @@ void CTrafficMonitorDlg::OnTimer(UINT_PTR nIDEvent)
 				traffic_tip_value = static_cast<__int64>(theApp.m_general_data.traffic_tip_value) * 1024 * 1024;
 			else
 				traffic_tip_value = static_cast<__int64>(theApp.m_general_data.traffic_tip_value) * 1024 * 1024 * 1024;
-			if (last_today_traffic < traffic_tip_value && (theApp.m_today_up_traffic + theApp.m_today_down_traffic) >= traffic_tip_value)
+
+			__int64 today_traffic = theApp.m_today_up_traffic + theApp.m_today_down_traffic;
+			if (last_today_traffic < traffic_tip_value && today_traffic >= traffic_tip_value)
 			{
-				CString info;
-				info.Format(CCommon::LoadText(IDS_TODAY_TRAFFIC_EXCEED, _T(" %d %s!")), theApp.m_general_data.traffic_tip_value, (theApp.m_general_data.traffic_tip_unit==0?_T("MB"):_T("GB")));
+				CString info = CCommon::LoadText(IDS_TODAY_TRAFFIC_EXCEED, CCommon::DataSizeToString(today_traffic));
 				ShowNotifyTip(CCommon::LoadText(_T("TrafficMonitor "), IDS_NOTIFY), info.GetString());
 			}
-			last_today_traffic = theApp.m_today_up_traffic + theApp.m_today_down_traffic;
+			last_today_traffic = today_traffic;
 		}
+
+		UpdateNotifyIconTip();
 
 		m_timer_cnt++;
 	}
@@ -1247,7 +1272,7 @@ void CTrafficMonitorDlg::OnTimer(UINT_PTR nIDEvent)
 
 	if (nIDEvent == TASKBAR_TIMER)
 	{
-		if (m_tBarDlg != nullptr)
+		if (m_tBarDlg != nullptr && ::IsWindow(m_tBarDlg->GetSafeHwnd()))
 		{
 			m_tBarDlg->AdjustWindowPos();
 			m_tBarDlg->Invalidate(FALSE);

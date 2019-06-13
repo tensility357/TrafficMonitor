@@ -1,5 +1,6 @@
 #pragma once
 #include "CommonData.h"
+#include "CVariant.h"
 
 class CCommon
 {
@@ -18,7 +19,7 @@ public:
 	返回值：转换后的字符串
 	*/
 	static CString DataSizeToString(unsigned int size, const PublicSettingData& cfg);
-	static CString DataSizeToString(unsigned int size);
+	static CString DataSizeToString(unsigned long long size);
 
 	static CString KBytesToString(unsigned int kb_size);
 	static CString KBytesToStringL(__int64 kb_size);
@@ -100,6 +101,12 @@ public:
 	static CString LoadText(UINT id, LPCTSTR back_str = nullptr);
 	static CString LoadText(LPCTSTR front_str, UINT id, LPCTSTR back_str = nullptr);
 
+	//安全的格式化字符串，将format_str中形如<%序号%>的字符串替换成初始化列表paras中的元素，元素支持int/double/LPCTSTR/CString格式，序号从1开始
+	static CString StringFormat(LPCTSTR format_str, const std::initializer_list<CVariant>& paras);
+
+	//从资源文件中载入字符串，并将资源字符串中形如<%序号%>的字符串替换成可变参数列表中的参数
+	static CString LoadTextFormat(UINT id, const std::initializer_list<CVariant>& paras);
+
 	//将int类型转换成字符串
 	//n：要转换的数值
 	//thousand_separation：是否要每隔3位数使用逗号分隔
@@ -120,5 +127,7 @@ public:
 
 	//设置线程语言
 	static void SetThreadLanguage(Language language);
+
+	static void SetDialogFont(CWnd* pDlg, CFont* pFont);
 };
 

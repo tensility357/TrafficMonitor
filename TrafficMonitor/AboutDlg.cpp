@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TrafficMonitor.h"
 #include "AboutDlg.h"
+#include "MessageDlg.h"
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	//ON_STN_CLICKED(IDC_STATIC_DONATE, &CAboutDlg::OnStnClickedStaticDonate)
@@ -21,6 +22,19 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_GITHUB, m_github);
 	DDX_Control(pDX, IDC_STATIC_DONATE, m_donate);
 	DDX_Control(pDX, IDC_TRANSLATOR_STATIC, m_translaotr_static);
+}
+
+CString CAboutDlg::GetDonateList()
+{
+	CString donate_list;
+	HRSRC hRes = FindResource(NULL, MAKEINTRESOURCE(IDR_ACKNOWLEDGEMENT_TEXT), _T("TEXT"));
+	if (hRes != NULL)
+	{
+		HGLOBAL hglobal = LoadResource(NULL, hRes);
+		if (hglobal != NULL)
+			donate_list.Format(_T("%s"), (LPVOID)hglobal);
+	}
+	return donate_list;
 }
 
 BOOL CAboutDlg::OnInitDialog()
@@ -58,9 +72,19 @@ BOOL CAboutDlg::OnInitDialog()
 	CString version_info;
 	GetDlgItemText(IDC_STATIC_VERSION, version_info);
 	version_info.Replace(_T("<version>"), VERSION);
+
 #ifdef COMPILE_FOR_WINXP
 	version_info += _T(" (For WinXP)");
 #endif // COMPILE_FOR_WINXP
+
+#ifdef _M_X64
+	version_info += _T(" (x64)");
+#endif
+
+#ifdef _DEBUG
+	version_info += _T(" (Debug)");
+#endif
+
 	SetDlgItemText(IDC_STATIC_VERSION, version_info);
 
 	//设置最后编译日期
@@ -97,6 +121,18 @@ BOOL CAboutDlg::PreTranslateMessage(MSG* pMsg)
 	// TODO: 在此添加专用代码和/或调用基类
 	if (pMsg->message == WM_MOUSEMOVE)
 		m_tool_tip.RelayEvent(pMsg);
+
+	//if (pMsg->message == WM_KEYDOWN)
+	//{
+	//	if ((GetKeyState(VK_CONTROL) & 0x80) && (GetKeyState(VK_SHIFT) & 0x8000) && pMsg->wParam == 'Z')
+	//	{
+	//		//测试程序崩溃
+	//		CString* pStr = nullptr;
+	//		int a = pStr->GetLength();
+	//		printf("%d", a);
+	//	}
+	//}
+
 	return CDialog::PreTranslateMessage(pMsg);
 }
 
@@ -108,20 +144,24 @@ BOOL CAboutDlg::PreTranslateMessage(MSG* pMsg)
 
 afx_msg LRESULT CAboutDlg::OnLinkClicked(WPARAM wParam, LPARAM lParam)
 {
-	switch (::GetDlgCtrlID(((CWnd*)wParam)->m_hWnd))
-	{
-	case IDC_STATIC_DONATE:
+	CWnd* pCtrl = (CWnd*)wParam;
+	if (pCtrl == &m_donate)
 	{
 		CDonateDlg donateDlg;
 		donateDlg.DoModal();
 	}
-	break;
-	case IDC_STATIC_ACKNOWLEDGEMENT:
-		//theApp.CheckUpdate(true);
-		CAcknowledgementDlg acknowledgementDlg;
-		acknowledgementDlg.DoModal();
-		break;
+	else if (pCtrl == &m_acknowledgement)
+	{
+		CString strContent = GetDonateList();
+		strContent += _T("\r\n");
+		strContent += CCommon::LoadText(IDS_ACKNOWLEDGEMENT_EXPLAIN);
+		CMessageDlg dlg;
+		dlg.SetWindowTitle(CCommon::LoadText(IDS_TITLE_ACKNOWLEDGEMENT));
+		dlg.SetInfoText(CCommon::LoadText(IDS_THANKS_DONORS));
+		dlg.SetMessageText(strContent);
+		dlg.DoModal();
 	}
+
 	return 0;
 }
 
